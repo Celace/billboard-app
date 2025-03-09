@@ -1,0 +1,312 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f0f4f8;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Video Background for Landing Page */
+.video-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+#bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6);
+}
+
+/* Container Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+}
+
+/* Landing Page */
+.landing-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.landing-container h1 {
+  font-size: 3.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.landing-container p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* General Heading Styles */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+h2 {
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+/* Button Styles */
+button {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #007bff, #00b4d8);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+  background: linear-gradient(135deg, #0056b3, #0096c7);
+}
+
+/* Map Page */
+#map {
+  height: 400px;
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  background: #fff;
+}
+
+#billboard-info {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 20px 0;
+  text-align: left;
+  transition: transform 0.3s ease;
+}
+
+#billboard-info:hover {
+  transform: translateY(-2px);
+}
+
+#billboard-info h3 {
+  font-size: 1.5rem;
+  color: #007bff;
+  margin-bottom: 0.5rem;
+}
+
+#billboard-info p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* Upload Page */
+#uploadForm {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  transition: transform 0.3s ease;
+}
+
+#uploadForm:hover {
+  transform: translateY(-2px);
+}
+
+#videoInput {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f9fbfd;
+  cursor: pointer;
+}
+
+#videoInput:hover {
+  border-color: #0056b3;
+}
+
+#preview {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Payment Page */
+#payment-options {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+#payment-options:hover {
+  transform: translateY(-2px);
+}
+
+#payment-options button {
+  margin: 10px;
+  width: 180px;
+}
+
+#mobile-money-form,
+#card-form {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  transition: transform 0.3s ease;
+}
+
+#mobile-money-form:hover,
+#card-form:hover {
+  transform: translateY(-2px);
+}
+
+#mobile-money-form label,
+#card-form label {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 10px 0 5px;
+  color: #444;
+}
+
+#mobile-money-form input,
+#card-form input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f9fbfd;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#mobile-money-form input:focus,
+#card-form input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+#payment-status {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #007bff;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .landing-container h1 {
+    font-size: 2.5rem;
+  }
+
+  .landing-container p {
+    font-size: 1.2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+
+  #map {
+    height: 300px;
+  }
+
+  #payment-options button {
+    width: 140px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-container h1 {
+    font-size: 2rem;
+  }
+
+  .landing-container p {
+    font-size: 1rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
+  button {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  #map {
+    height: 250px;
+  }
+
+  #payment-options button {
+    width: 100%;
+    margin: 5px 0;
+  }
+
+  #mobile-money-form,
+  #card-form {
+    padding: 15px;
+  }
+}

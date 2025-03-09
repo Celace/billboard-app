@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Video</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Upload Your Advertisement</h1>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <input
+          type="file"
+          name="video"
+          id="videoInput"
+          accept="video/*"
+          required
+        />
+        <button type="submit">Upload</button>
+      </form>
+      <video
+        id="preview"
+        controls
+        style="display: none; max-width: 100%"
+      ></video>
+      <button
+        id="proceedPayment"
+        style="display: none"
+        onclick="window.location.href='payment.html'"
+      >
+        Proceed to Payment
+      </button>
+    </div>
+    <script>
+      const form = document.getElementById('uploadForm');
+      const videoInput = document.getElementById('videoInput');
+      const preview = document.getElementById('preview');
+      const proceedBtn = document.getElementById('proceedPayment');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const response = await fetch('/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        const result = await response.json();
+        if (result.success) {
+          preview.src = `/uploads/${result.filename}`;
+          preview.style.display = 'block';
+          proceedBtn.style.display = 'block';
+          localStorage.setItem('videoPath', result.filename);
+        } else {
+          alert('Upload failed');
+        }
+      });
+    </script>
+  </body>
+</html>

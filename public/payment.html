@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment - Billboard Ads</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Complete Your Payment</h1>
+      <div id="payment-options">
+        <h2>Select Payment Method</h2>
+        <button id="mobile-money-btn">Pay with Mobile Money</button>
+        <button id="card-btn">Pay with Card</button>
+      </div>
+
+      <!-- Mobile Money Form -->
+      <form id="mobile-money-form" style="display: none">
+        <label for="mobile-number">Mobile Number</label>
+        <input
+          type="tel"
+          id="mobile-number"
+          placeholder="e.g., 0551234567"
+          required
+        />
+        <button type="submit" id="mobile-pay-now">Pay Now</button>
+      </form>
+
+      <!-- Card Payment Form -->
+      <form id="card-form" style="display: none">
+        <label for="card-number">Card Number</label>
+        <input
+          type="text"
+          id="card-number"
+          placeholder="e.g., 4084 0840 8408 4081"
+          required
+        />
+        <label for="expiry">Expiry (MM/YY)</label>
+        <input type="text" id="expiry" placeholder="e.g., 12/25" required />
+        <label for="cvv">CVV</label>
+        <input type="text" id="cvv" placeholder="e.g., 408" required />
+        <button type="submit" id="card-pay-now">Pay Now</button>
+      </form>
+
+      <div id="payment-status"></div>
+    </div>
+
+    <script>
+      // Debugging: Ensure PaystackPop is loaded
+      window.onload = function () {
+        if (typeof PaystackPop === 'undefined') {
+          document.getElementById('payment-status').innerHTML =
+            'Error: Paystack script failed to load.';
+          console.error(
+            'PaystackPop is not defined. Check network or script source.'
+          );
+        } else {
+          console.log('PaystackPop loaded successfully.');
+        }
+      };
+
+      // Payment setup
+      const paystackPublicKey = 'pk_test_YOUR_PUBLIC_KEY'; // Replace with your real key
+      const amount = 10000; // 100 GHS in pesewas
+      const email = 'test@example.com'; // Replace with dynamic email if needed
+
+      // Toggle payment options
+      document
+        .getElementById('mobile-money-btn')
+        .addEventListener('click', () => {
+          console.log('Mobile Money button clicked');
+          document.getElementById('mobile-money-form').style.display = 'block';
+          document.getElementById('card-form').style.display = 'none';
+        });
+
+      document.getElementById('card-btn').addEventListener('click', () => {
+        console.log('Card button clicked');
+        document.getElementById('card-form').style.display = 'block';
+        document.getElementById('mobile-money-form').style.display = 'none';
+      });
+
+      // Mobile Money Payment
+      document
+        .getElementById('mobile-money-form')
+        .addEventListener('submit', (e) => {
+          e.preventDefault();
+          console.log('Mobile Money Pay Now clicked');
+          const mobileNumber = document.getElementById('mobile-number').value;
+          const statusDiv = document.getElementById('payment-status');
+          const billboard = JSON.parse(
+            localStorage.getItem('selectedBillboard')
+          );
+          const videoPath = localStorage.getItem('videoPath');
+
+          if (!billboard || !videoPath) {
+            statusDiv.innerHTML =
+              'Error: Please select a billboard and upload a video first.';
+            console.error('Missing billboard or videoPath in localStorage');
+            return;
+          }
+
+          statusDiv.innerHTML = 'Initiating payment...';
+          const handler = PaystackPop.setup({
+            key: paystackPublicKey,
+            email: email,
+            amount: amount,
+            currency: 'GHS',
+            channels: ['mobile_money'],
+            metadata: {
+              mobile_number: mobileNumber,
+              billboard: billboard.name,
+              videoPath,
+            },
+            callback: (response) => {
+              console.log('Payment Response:', response);
+              statusDiv.innerHTML = `Payment successful! Reference: ${response.reference}`;
+              fetch('/verify-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  reference: response.reference,
+                  billboard,
+                  videoPath,
+                }),
+              })
+                .then((res) => res.json())
+                .then((result) => {
+                  if (result.success) {
+                    statusDiv.innerHTML =
+                      'Payment verified! Your ad is live. Redirecting...';
+                    setTimeout(
+                      () => (window.location.href = 'index.html'),
+                      2000
+                    );
+                  } else {
+                    statusDiv.innerHTML = 'Payment verification failed.';
+                  }
+                })
+                .catch((err) => {
+                  console.error('Fetch error:', err);
+                  statusDiv.innerHTML = 'Network error during verification.';
+                });
+            },
+            onClose: () => {
+              console.log('Payment window closed');
+              statusDiv.innerHTML = 'Payment cancelled.';
+            },
+          });
+          handler.openIframe();
+        });
+
+      // Card Payment
+      document.getElementById('card-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        console.log('Card Pay Now clicked');
+        const statusDiv = document.getElementById('payment-status');
+        const billboard = JSON.parse(localStorage.getItem('selectedBillboard'));
+        const videoPath = localStorage.getItem('videoPath');
+
+        if (!billboard || !videoPath) {
+          statusDiv.innerHTML =
+            'Error: Please select a billboard and upload a video first.';
+          console.error('Missing billboard or videoPath in localStorage');
+          return;
+        }
+
+        statusDiv.innerHTML = 'Initiating payment...';
+        const handler = PaystackPop.setup({
+          key: paystackPublicKey,
+          email: email,
+          amount: amount,
+          currency: 'GHS',
+          channels: ['card'],
+          metadata: { billboard: billboard.name, videoPath },
+          callback: (response) => {
+            console.log('Payment Response:', response);
+            statusDiv.innerHTML = `Payment successful! Reference: ${response.reference}`;
+            fetch('/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                reference: response.reference,
+                billboard,
+                videoPath,
+              }),
+            })
+              .then((res) => res.json())
+              .then((result) => {
+                if (result.success) {
+                  statusDiv.innerHTML =
+                    'Payment verified! Your ad is live. Redirecting...';
+                  setTimeout(() => (window.location.href = 'index.html'), 2000);
+                } else {
+                  statusDiv.innerHTML = 'Payment verification failed.';
+                }
+              })
+              .catch((err) => {
+                console.error('Fetch error:', err);
+                statusDiv.innerHTML = 'Network error during verification.';
+              });
+          },
+          onClose: () => {
+            console.log('Payment window closed');
+            statusDiv.innerHTML = 'Payment cancelled.';
+          },
+        });
+        handler.openIframe();
+      });
+    </script>
+  </body>
+</html>
