@@ -3,6 +3,8 @@ const multer = require('multer');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const axios = require('axios');
+require('dotenv').config(); // Add this line to load .env
+
 const app = express();
 const port = 3000;
 
@@ -37,8 +39,8 @@ const upload = multer({
   },
 });
 
-// Paystack Secret Key (replace with your own from Paystack dashboard)
-const paystackSecretKey = 'sk_test_YOUR_SECRET_KEY';
+// Paystack Secret Key from .env
+const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
 
 // Routes
 app.post('/upload', upload.single('video'), (req, res) => {
@@ -47,6 +49,10 @@ app.post('/upload', upload.single('video'), (req, res) => {
       .status(400)
       .json({ success: false, message: 'No file uploaded' });
   res.json({ success: true, filename: req.file.filename });
+});
+
+app.get('/paystack-key', (req, res) => {
+  res.json({ publicKey: process.env.PAYSTACK_PUBLIC_KEY });
 });
 
 app.post('/verify-payment', async (req, res) => {
@@ -61,7 +67,6 @@ app.post('/verify-payment', async (req, res) => {
     );
 
     if (response.data.status && response.data.data.status === 'success') {
-      // Store in database
       db.run(
         'INSERT INTO ads (billboard, videoPath, paid) VALUES (?, ?, ?)',
         [billboard.name, videoPath, 1],
